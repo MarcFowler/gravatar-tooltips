@@ -2,7 +2,8 @@
 	var $, config, gravatarData = {};
 	
 	config = {
-		'matches': '[href^="http://gravatar.com/"], [href^="https://gravatar.com/"]'
+		'matches': '[href^="http://gravatar.com/"], [href^="https://gravatar.com/"], [href^="http://en.gravatar.com/"]',
+		'jsonURL': 'http://en.gravatar.com/'
 	}
 	
 	var load = function(url, callback){
@@ -23,14 +24,42 @@
 		document.getElementsByTagName('head')[0].appendChild(script);
 	};
 	
-	var requestGravatarData = function(username) {
+	var requestData = function(username) {
+		$.getJSON(config.jsonURL+username+'.json?callback=?', function(data) {
+				gravatarData[username] = data.entry[0];
+				injectData(username);
+			});
+	};
+	
+	var injectData = function(username) {
+		var data = gravatarData[username], tooltip = $('#gravatar-tooltips-tip-'+username);
+		if(!tooltip) return false;
+		
+		// Set the name
+		$('#gravatar-tooltips-'+username+'-meta-field-name').text(data.name.formatted);
+		
+		// Set the image
 		//
+		
+		// Remove the loading from the tooltip
+		tooltip.removeClass('gravatar-tooltips-ui-loading');
+		tooltip.find('.gravatar-tooltips-inner').css({'opacity': 1});
 	};
 	
 	var buildTooltip = function(username) {
-		var el = $('<div id="gravatar-tooltips-tip-'+username+'" class="gravatar-tooltips-tip"><div class="gravatar-tooltips-inner"><div class="gravatar-tooltips-image"></div><div class="gravatar-tooltips-meta"></div></div><div class="gravatar-tooltips-point"></div></div>');
-		return el;
-	}
+		var str = '<div id="gravatar-tooltips-tip-'+username+'" class="gravatar-tooltips-tip">';
+		str += '<div class="gravatar-tooltips-inner">';
+			str += '<div class="gravatar-tooltips-image"></div>';
+			str += '<div class="gravatar-tooltips-meta">';
+				str += '<span class="gravatar-tooltips-meta-field">';
+				str += '<span class="gravatar-tooltips-meta-label">Name</span>';
+				str += '<span class="gravatar-tooltips-meta-field gravatar-tooltips-meta-field-name" id="gravatar-tooltips-'+username+'-meta-field-name"></span>';
+				str += '</span>';
+			str += '</div>';
+		str += '</div>';
+		str += '<div class="gravatar-tooltips-point"></div></div>';
+		return $(str);
+	};
 	
 	var init = function() {
 		if($('#gravatar-tooltips-stylesheet').length == 0) $('<link id="gravatar-tooltips-stylesheet" rel="stylesheet" type="text/css" href="gravatar-tooltips.css?v=1" />').appendTo(document.head);
@@ -43,6 +72,9 @@
 				tooltip.appendTo(document.body);
 			}
 			
+			var tooltip_inner = tooltip.find('.gravatar-tooltips-inner'),
+				tooltip_image = tooltip.find('.gravatar-tooltips-image');
+			
 			var measure = $(this).offset(), left = measure.left, top = measure.top - 105;
 			
 			tooltip.css({
@@ -53,16 +85,22 @@
 			
 			tooltip.removeClass('gravatar-tooltips-animated-fadeOutDown').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeInUp');
 			
-			if(!gravatarData[username]) tooltip.addClass('gravatar-tooltips-ui-loading');
+			if(!gravatarData[username]) {
+				tooltip.addClass('gravatar-tooltips-ui-loading');
+				tooltip_inner.css({'opacity': 0});
+				requestData(username);
+			} else {
+				injectData(username);
+			}
 			
 			return false;
 		});
-	}
+	};
 	
 	var assetsReady = function() {
 		$ = jQuery.noConflict(true);
 		$(document).ready(init);
-	}
+	};
 
 	load('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', assetsReady);
 })();
