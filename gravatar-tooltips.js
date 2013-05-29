@@ -43,7 +43,7 @@
 				tooltip.appendTo(document.body);
 			}
 			
-			var measure = $(this).offset(), left = measure.left, top = measure.top - 100;
+			var measure = $(this).offset(), left = measure.left, top = measure.top - 105;
 			
 			tooltip.css({
 				'left': left,
@@ -52,6 +52,8 @@
 			});
 			
 			tooltip.removeClass('gravatar-tooltips-animated-fadeOutDown').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeInUp');
+			
+			if(!gravatarData[username]) tooltip.addClass('gravatar-tooltips-ui-loading');
 			
 			return false;
 		});
