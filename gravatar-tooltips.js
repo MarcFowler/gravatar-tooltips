@@ -1,5 +1,5 @@
 (function() {
-	var $, config;
+	var $, config, gravatarData = {};
 	
 	config = {
 		'matches': '[href^="http://gravatar.com/"], [href^="https://gravatar.com/"]'
@@ -23,9 +23,33 @@
 		document.getElementsByTagName('head')[0].appendChild(script);
 	};
 	
+	var requestGravatarData = function(username) {
+		//
+	};
+	
+	var buildTooltip = function(username) {
+		var el = $('<div id="gravatar-tooltips-tip-'+username+'" class="gravatar-tooltips-tip"><div class="gravatar-tooltips-inner"><div class="gravatar-tooltips-image"></div><div class="gravatar-tooltips-meta"></div></div><div class="gravatar-tooltips-point"></div></div>');
+		return el;
+	}
+	
 	var init = function() {
+		if($('#gravatar-tooltips-stylesheet').length == 0) $('<link id="gravatar-tooltips-stylesheet" rel="stylesheet" type="text/css" href="gravatar-tooltips.css?v=1" />').appendTo(document.head);
+		
 		$(document.body).on('click', config.matches, function() {
-			alert('clicked');
+			var username = $(this).attr('href').split('/').pop();
+			var tooltip = $('#gravatar-tooltips-tip-'+username);
+			if(tooltip.length == 0) {
+				tooltip = buildTooltip(username);
+				tooltip.appendTo(document.body);
+			}
+			
+			var measure = $(this).offset();
+			
+			tooltip.css({
+				'left': measure.left,
+				'top': measure.top
+			});
+			
 			return false;
 		});
 	}
