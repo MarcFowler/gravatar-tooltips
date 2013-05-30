@@ -35,26 +35,38 @@
 		var data = gravatarData[username], tooltip = $('#gravatar-tooltips-tip-'+username);
 		if(!tooltip) return false;
 		
+		console.log(data);
+		
 		// Set the name
 		$('#gravatar-tooltips-'+username+'-meta-field-name').text(data.name.formatted);
 		
-		// Set the image
-		//
+		// Set the location
+		$('#gravatar-tooltips-'+username+'-meta-field-location').text(data.currentLocation);
 		
-		// Remove the loading from the tooltip
+		// Set the image
+		$('#gravatar-tooltips-'+username+'-meta-field-image').attr('src', data.photos[0].value); // I guess we can trust to always return the thumbnail?
+		
+		// Remove the loading from the tooltip_image
 		tooltip.removeClass('gravatar-tooltips-ui-loading');
-		tooltip.find('.gravatar-tooltips-inner').css({'opacity': 1});
+		tooltip.find('.gravatar-tooltips-inner').animate({'opacity': 1}, 500);
 	};
 	
 	var buildTooltip = function(username) {
 		var str = '<div id="gravatar-tooltips-tip-'+username+'" class="gravatar-tooltips-tip">';
 		str += '<div class="gravatar-tooltips-inner">';
-			str += '<div class="gravatar-tooltips-image"></div>';
+			str += '<div class="gravatar-tooltips-image"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="gravatar-tooltips-meta-field gravatar-tooltips-meta-field-image" id="gravatar-tooltips-'+username+'-meta-field-image" /></div>';
 			str += '<div class="gravatar-tooltips-meta">';
-				str += '<span class="gravatar-tooltips-meta-field">';
-				str += '<span class="gravatar-tooltips-meta-label">Name</span>';
-				str += '<span class="gravatar-tooltips-meta-field gravatar-tooltips-meta-field-name" id="gravatar-tooltips-'+username+'-meta-field-name"></span>';
+			
+				str += '<span class="gravatar-tooltips-meta-line">';
+					str += '<span class="gravatar-tooltips-meta-label">Name</span>';
+					str += '<span class="gravatar-tooltips-meta-field gravatar-tooltips-meta-field-name" id="gravatar-tooltips-'+username+'-meta-field-name"></span>';
 				str += '</span>';
+				
+				str += '<span class="gravatar-tooltips-meta-line">';
+					str += '<span class="gravatar-tooltips-meta-label">Location</span>';
+					str += '<span class="gravatar-tooltips-meta-field gravatar-tooltips-meta-field-location" id="gravatar-tooltips-'+username+'-meta-field-location"></span>';
+				str += '</span>';
+				
 			str += '</div>';
 		str += '</div>';
 		str += '<div class="gravatar-tooltips-point"></div></div>';
