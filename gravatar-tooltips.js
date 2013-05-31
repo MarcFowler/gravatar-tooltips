@@ -81,10 +81,13 @@
 			var tooltip = $('#gravatar-tooltips-tip-'+username);
 			if(tooltip.length == 0) {
 				tooltip = buildTooltip(username);
-				tooltip.appendTo(document.body);
+				tooltip.css('display', 'block').appendTo(document.body);
 			} else {
 				if(tooltip.hasClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeInUp')) {
 					tooltip.removeClass('gravatar-tooltips-animated-fadeInUp').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeOutDown');
+					setTimeout(function() {
+						tooltip.css('display', 'none');
+					}, 1000);
 					return false;
 				}
 			}
