@@ -89,6 +89,8 @@
 						tooltip.css('display', 'none');
 					}, 1000);
 					return false;
+				} else {
+					tooltip.css('display', 'block');
 				}
 			}
 			
