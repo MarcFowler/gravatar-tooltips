@@ -6,6 +6,42 @@
 		'jsonURL': 'http://en.gravatar.com/'
 	}
 	
+	var prep = function() {
+		(function ($, elements, OUTER_CLICK) { // https://gist.github.com/kkosuge/3669605
+		    function check(event) {
+		        for (var i = 0, l = elements.length, target = event.target, el; i < l; i++) {
+		            el = elements[i];
+		            if (el !== target && !(el.contains ? el.contains(target) : el.compareDocumentPosition ? el.compareDocumentPosition(target) & 16 : 1)) {
+		                $.event.trigger(OUTER_CLICK, event, el);
+		            }
+		        }
+		    }
+		    $.event.special[OUTER_CLICK] = {
+		        setup: function () {
+		            var i = elements.length;
+		            if (!i) {
+		                $.event.add(document, 'click', check);
+		            }
+		            if ($.inArray(this, elements) < 0) {
+		                elements[i] = this;
+		            }
+		        },
+		        teardown: function () {
+		            var i = $.inArray(this, elements);
+		            if (i >= 0) {
+		                elements.splice(i, 1);
+		                if (!elements.length) {
+		                    jQuery(this).unbind('click', check);
+		                }
+		            }
+		        }
+		    };
+		    $.fn[OUTER_CLICK] = function (fn) {
+		        return fn ? this.bind(OUTER_CLICK, fn) : this.trigger(OUTER_CLICK);
+		    };
+		})($, [], 'outerClick');
+	};
+	
 	var load = function(url, callback){
 		var script = document.createElement('script');
 		script.id = 'gravatar-tooltips-assets';
@@ -84,10 +120,7 @@
 				tooltip.css('display', 'block').appendTo(document.body);
 			} else {
 				if(tooltip.hasClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeInUp')) {
-					tooltip.removeClass('gravatar-tooltips-animated-fadeInUp').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeOutDown');
-					setTimeout(function() {
-						tooltip.css('display', 'none');
-					}, 1000);
+					hideTooltip(tooltip);
 					return false;
 				} else {
 					tooltip.css('display', 'block');
@@ -117,10 +150,28 @@
 			
 			return false;
 		});
+		
+		$(document.body).bind('outerClick', config.matches, function() {
+			$('.gravatar-tooltips-tip').each(function(idx, el) {
+				hideTooltip(el);
+			});
+		});
+	};
+	
+	var hideTooltip = function(tooltip) {
+		$(tooltip).removeClass('gravatar-tooltips-animated-fadeInUp').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeOutDown');
+		setTimeout(function() {
+			$(tooltip).css('display', 'none');
+		}, 1000);
+	};
+	
+	var showTooltip = function(tooltip) {
+		//
 	};
 	
 	var assetsReady = function() {
 		$ = jQuery.noConflict(true);
+		prep();
 		$(document).ready(init);
 	};
 
