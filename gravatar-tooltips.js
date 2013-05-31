@@ -82,6 +82,11 @@
 			if(tooltip.length == 0) {
 				tooltip = buildTooltip(username);
 				tooltip.appendTo(document.body);
+			} else {
+				if(tooltip.hasClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeInUp')) {
+					tooltip.removeClass('gravatar-tooltips-animated-fadeInUp').addClass('gravatar-tooltips-animated gravatar-tooltips-animated-fadeOutDown');
+					return false;
+				}
 			}
 			
 			var tooltip_inner = tooltip.find('.gravatar-tooltips-inner'),
