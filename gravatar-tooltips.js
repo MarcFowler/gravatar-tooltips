@@ -61,8 +61,18 @@
 	};
 	
 	var requestData = function(username) {
-		$.getJSON(config.jsonURL+username+'.json?callback=?', function(data) {
-				gravatarData[username] = data.entry[0];
+		$.getJSON(config.jsonURL+username+'.json?callback=?', function(response) {
+				var data = response.entry[0];
+				
+				// Let's clarify the IM settings
+				data.services = {};
+				$.each(data.ims, function(idx, el) {
+					if($.inArray(el.type, ['skype', 'gtalk', 'email', 'aim']) != -1) data.services[el.type] = el.value;
+				});
+				
+				// And store this
+				gravatarData[username] = data;
+				
 				injectData(username);
 			});
 	};
@@ -81,6 +91,34 @@
 		
 		// Set the image
 		$('#gravatar-tooltips-'+username+'-meta-field-image').attr('src', data.photos[0].value); // I guess we can trust to always return the thumbnail?
+		
+		// Install our buttons
+		var buttonWrapper = tooltip.find('.gravatar-tooltips-button-wrapper'), button = $('<div class="gravatar-tooltips-button"><a href="" class="gravatar-tooltips-button-text"></a></div>');
+		
+		var buildButton = function(id, text, link) {
+			var idstr = 'gravatar-tooltips-'+username+'-button-'+id;
+			if($('#'+idstr).length > 0) return false; // Don't duplicate buttons
+			var theButton = button.clone().attr('id', 'gravatar-tooltips-'+username+'-button-'+id).appendTo(buttonWrapper);
+			theButton.find('a').attr('href', link).text(text);
+		}
+		
+		buildButton('profile', 'Profile', 'http://gravatar.com/'+username);
+		
+		if(data.services.skype) {
+			buildButton('skype', 'Skype', 'skype:'+data.services.skype+'?chat');
+		}
+		
+		if(data.services.gtalk) {
+			buildButton('gtalk', 'Google Talk', 'xmpp:'+data.services.gtalk);
+		}
+		
+		if(data.services.email) {
+			buildButton('email', 'Email', 'mailto:'+data.services.email);
+		}
+		
+		if(data.services.aim) {
+			buildButton('aim', 'AIM', 'aim:goim?screenname='+data.services.aim);
+		}
 		
 		// Remove the loading from the tooltip_image
 		tooltip.removeClass('gravatar-tooltips-ui-loading');
@@ -105,6 +143,9 @@
 				
 			str += '</div>';
 		str += '</div>';
+		
+		str += '<div class="gravatar-tooltips-button-wrapper"></div>'
+		
 		str += '<div class="gravatar-tooltips-point"></div></div>';
 		return $(str);
 	};

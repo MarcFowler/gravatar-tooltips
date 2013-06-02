@@ -161,20 +161,24 @@
 	animation-name: gravatarTooltipsFadeOutDown;
 }
 
-.gravatar-tooltips-tip { position: absolute; width: 380px; height: 80px; background: #F0F6FA; border: 3px solid rgba(135, 135, 135, 0.6); border-radius: 6px; box-shadow: 3px 3px 3px rgba(171, 171, 171, 0.4); }
+.gravatar-tooltips-tip { position: absolute; width: 380px; height: 130px; background: #F0F6FA; border: 3px solid rgba(135, 135, 135, 0.6); border-radius: 6px; box-shadow: 3px 3px 3px rgba(171, 171, 171, 0.4); }
 .gravatar-tooltips-tip.gravatar-tooltips-ui-loading { background-repeat: no-repeat; background-position: center center; background-image: url(data:image/gif;base64,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); }
 .gravatar-tooltips-point { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid rgba(135, 135, 135, 1); position: absolute; bottom: -10px; left: 10px; }
 
 .gravatar-tooltips-inner { position: relative; overflow: auto; }
-.gravatar-tooltips-image { width: 80px; height: 80px; float: left; }
+.gravatar-tooltips-image { width: 80px; height: 80px; float: left; margin: 0 0 5px 0; }
 .gravatar-tooltips-image img {  }
 
 .gravatar-tooltips-meta { float: left; width: 280px; padding: 10px; }
 .gravatar-tooltips-meta-line { display: block; }
-.gravatar-tooltips-meta-label { font-weight: bold; color: #79A2BD; font-size: 14px; text-shadow: 1px 1px 0 #fff; }
-span.gravatar-tooltips-meta-field { margin: 0 0 0 10px; font-size: 14px; text-shadow: 1px 1px 0 #fff; color: #2887C7; }
+.gravatar-tooltips-meta-label { font-weight: bold; color: #79A2BD; font-size: 16px; text-shadow: 1px 1px 0 #fff; }
+span.gravatar-tooltips-meta-field { margin: 0 0 0 10px; font-size: 16px; text-shadow: 1px 1px 0 #fff; color: #2887C7; }
 
-
+.gravatar-tooltips-button-wrapper { padding: 5px; background: rgba(188, 211, 240, 0.6); overflow: auto; }
+.gravatar-tooltips-button { line-height: 20px; padding: 4px; border-radius: 6px; background: #A1CAE6; border: 1px solid #7FBBE3; float: left; margin: 0 5px 0 0; transition: background-color 150ms ease-in, color 150ms ease-in; }
+.gravatar-tooltips-button:hover { background: #8CBDDE; }
+.gravatar-tooltips-button-text { font-size: 14px; border: none; text-decoration: none; margin: 0; padding: 0; cursor: pointer; color: #33678A; text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5); }
+.gravatar-tooltips-button:hover .gravatar-tooltips-button-text { color: #22608A; }
 
 
 
